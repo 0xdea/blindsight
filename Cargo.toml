@@ -1,0 +1,18 @@
+[package]
+name = "blindsight"
+version = "0.1.0"
+authors = ["Marco Ivaldi <raptor@0xdeadbeef.info>"]
+edition = "2021"
+description = "TODO"
+homepage = "https://0xdeadbeef.info/"
+repository = "https://github.com/0xdea/blindsight"
+license = "MIT"
+keywords = ["metasploit-framework", "meterpreter", "tactical-exploitation"]
+
+[dependencies]
+
+[profile.release]
+# see https://github.com/johnthagen/min-sized-rust
+strip = true
+lto = true
+panic = "abort"
