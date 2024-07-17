@@ -7,9 +7,20 @@ description = "TODO"
 homepage = "https://0xdeadbeef.info/"
 repository = "https://github.com/0xdea/blindsight"
 license = "MIT"
-keywords = ["metasploit-framework", "meterpreter", "tactical-exploitation"]
+keywords = ["windows", "minidump", "mimikatz", "tactical-exploitation"]
 
 [dependencies]
+sysinfo = "0.30.13"
+
+[dependencies.windows]
+version = "0.58.0"
+features = [
+    "Win32_System_Threading",
+    "Win32_System_Diagnostics_Debug",
+    "Win32_Storage_FileSystem",
+    "Win32_System_Kernel",
+    "Win32_System_Memory",
+]
 
 [profile.release]
 # see https://github.com/johnthagen/min-sized-rust
