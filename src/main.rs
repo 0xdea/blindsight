@@ -17,8 +17,9 @@
 //! https://attack.mitre.org/techniques/T1003/001/  
 //! https://github.com/fortra/nanodump  
 //! https://github.com/w1u0u1/minidump/tree/main/minidump  
-//! https://github.com/joaoviictorti/RustRedOps
-//! https://github.com/Kudaes/Dumpy
+//! https://github.com/anthemtotheego/CredBandit  
+//! https://github.com/joaoviictorti/RustRedOps  
+//! https://github.com/Kudaes/Dumpy  
 //!
 //! # Cross-compiling
 //! ```sh
