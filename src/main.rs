@@ -10,12 +10,15 @@
 //! > -- Peter Watts, Blindsight (2006)  
 //!
 //! Simple tool to dump LSASS memory, bypassing common countermeasures.
+//! TODO: features.
 //!
 //! # See also
 //! https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary  
+//! https://attack.mitre.org/techniques/T1003/001/  
 //! https://github.com/fortra/nanodump  
 //! https://github.com/w1u0u1/minidump/tree/main/minidump  
-//! https://attack.mitre.org/techniques/T1003/001/  
+//! https://github.com/joaoviictorti/RustRedOps
+//! https://github.com/Kudaes/Dumpy
 //!
 //! # Cross-compiling
 //! ```sh
