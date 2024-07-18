@@ -66,8 +66,8 @@ fn main() {
         .unwrap()
         .to_str()
         .unwrap_or("blindsight.exe");
-    let path = match args.len() {
-        1 => "C:\\Windows\\Tasks\\lsass.dmp",
+    let action = match args.len() {
+        1 => "dump",
         2 => &args[1].clone(),
         _ => {
             usage(prog);
@@ -75,13 +75,13 @@ fn main() {
         }
     };
 
-    if path.starts_with('-') {
+    if action.starts_with('-') {
         usage(prog);
         process::exit(1);
     }
 
     // Let's do it
-    match run(path) {
+    match run(action) {
         Ok(()) => (),
         Err(err) => {
             eprintln!("[!] Error: {}", err);
