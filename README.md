@@ -12,11 +12,12 @@
 >  
 > -- Peter Watts, Blindsight (2006)  
 
-Simple tool to dump LSASS memory, bypassing common countermeasures.
-TODO: features.
+Red teaming tool to dump LSASS memory, bypassing common countermeasures. 
+It uses Transactional NTFS (TxF API) to transparently encrypt the memory 
+dump, to avoid triggering AV/EDR/XDR.
 
 Blog post:  
-TODO  
+*TODO*  
 
 See also:  
 https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary  
@@ -29,24 +30,37 @@ https://github.com/Kudaes/Dumpy
 
 ## Cross-compiling
 ```
-TODO
+[macOS example]
+$ brew install mingw-w64
+$ rustup target add x86_64-pc-windows-gnu
+$ cargo build --release --target x86_64-pc-windows-gnu
 ```
 
 ## Usage
 ```
-TODO
+C:\> blindsight.exe [dump | file_to_decrypt.log]
 ```
 
 ## Examples
-TODO:
+Dump LSASS memory:
+```sh
+C:\> blindsight.exe
 ```
-TODO
-```
- 
-TODO:
-```
-TODO
+
+Decrypt encrypted memory dump:
+```sh
+C:\> blindsight.exe 29ABE9Hy.log
 ```
 
 ## Tested on
-* TODO
+* Microsoft Windows 11 with Microsoft Defender Antivirus
+
+## TODO
+* Optimize memory usage in case of large memory dumps
+* Use litcrypt2 or similar crate to encrypt strings locally
+* Allow to manually specify LSASS pid to avoid noisy process scans
+* Avoid directly opening LSASS handle with OpenProcess
+* Use https://github.com/Kudaes/DInvoke_rs for API hoos evasion
+* https://splintercod3.blogspot.com/p/the-hidden-side-of-seclogon-part-3.html
+* Implement exfiltration channels (e.g., TFTP, FTP, HTTP...)
+* Consider better command line handling when minimal is not enough

@@ -3,11 +3,11 @@ name = "blindsight"
 version = "0.1.0"
 authors = ["Marco Ivaldi <raptor@0xdeadbeef.info>"]
 edition = "2021"
-description = "TODO"
+description = "Red teaming tool to dump LSASS memory, bypassing common countermeasures."
 homepage = "https://0xdeadbeef.info/"
 repository = "https://github.com/0xdea/blindsight"
 license = "MIT"
-keywords = ["windows", "minidump", "mimikatz", "tactical-exploitation"]
+keywords = ["windows", "minidump", "mimikatz", "redteaming", "tactical-exploitation"]
 
 [dependencies]
 sysinfo = "0.30.13"
@@ -27,5 +27,7 @@ features = [
 [profile.release]
 # see https://github.com/johnthagen/min-sized-rust
 strip = true
+opt-level = "z"
 lto = true
+# codegen-units = 1
 panic = "abort"
