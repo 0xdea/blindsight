@@ -20,10 +20,10 @@ Blog post:
 *TODO*  
 
 See also:  
-https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary  
 https://attack.mitre.org/techniques/T1003/001/  
+https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary  
 https://github.com/fortra/nanodump  
-https://github.com/w1u0u1/minidump/tree/main/minidump  
+https://github.com/w1u0u1/minidump  
 https://github.com/anthemtotheego/CredBandit  
 https://github.com/joaoviictorti/RustRedOps  
 https://github.com/Kudaes/Dumpy  
@@ -56,11 +56,11 @@ C:\> blindsight.exe 29ABE9Hy.log
 * Microsoft Windows 11 with Microsoft Defender Antivirus
 
 ## TODO
-* Optimize memory usage in case of large memory dumps
-* Use litcrypt2 or similar crate to encrypt strings locally
+* Optimize memory usage (simply corrupt "magic bytes" instead of XORing?)
+* Use litcrypt2 or similar to encrypt strings locally
 * Allow to manually specify LSASS pid to avoid noisy process scans
 * Avoid directly opening LSASS handle with OpenProcess
-* Use https://github.com/Kudaes/DInvoke_rs for API hoos evasion
+* Use https://github.com/Kudaes/DInvoke_rs or similar for API hooks evasion
 * https://splintercod3.blogspot.com/p/the-hidden-side-of-seclogon-part-3.html
-* Implement exfiltration channels (e.g., TFTP, FTP, HTTP...)
-* Consider better command line handling when minimal is not enough
+* Implement fileless exfiltration channels (e.g., TFTP, FTP, HTTP...)
+* Consider better command line handling if minimal is not enough
