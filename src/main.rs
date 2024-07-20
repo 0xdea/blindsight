@@ -12,7 +12,7 @@
 // Red teaming tool to dump LSASS memory, bypassing common countermeasures. 
 // It uses Transactional NTFS (TxF API) to transparently encrypt the memory 
 // dump, to avoid triggering AV/EDR/XDR.
-// 
+//
 
 use std::env;
 use std::path::Path;
