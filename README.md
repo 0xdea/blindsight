@@ -22,6 +22,7 @@ Blog post:
 See also:  
 https://attack.mitre.org/techniques/T1003/001/  
 https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary  
+https://www.ired.team/offensive-security/credential-access-and-credential-dumping  
 https://github.com/fortra/nanodump  
 https://github.com/w1u0u1/minidump  
 https://github.com/anthemtotheego/CredBandit  

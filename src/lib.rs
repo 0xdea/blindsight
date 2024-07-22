@@ -16,6 +16,7 @@
 //! # See also
 //! [Mitre](https://attack.mitre.org/techniques/T1003/001/)  
 //! [Synacktiv](https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary)  
+//! [RT Notes](https://www.ired.team/offensive-security/credential-access-and-credential-dumping)
 //! [nanodump](https://github.com/fortra/nanodump)  
 //! [minidump](https://github.com/w1u0u1/minidump)  
 //! [Credbandit](https://github.com/anthemtotheego/CredBandit)  
