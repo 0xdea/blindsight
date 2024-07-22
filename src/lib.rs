@@ -54,10 +54,12 @@
 //! * Optimize memory usage (simply corrupt "magic bytes" instead of XORing?)
 //! * Use litcrypt2 or similar to encrypt strings locally
 //! * Allow to manually specify LSASS pid to avoid noisy process scans
-//! * Avoid directly opening LSASS handle with OpenProcess
+//! * Avoid directly opening LSASS handle (e.g., via PssCaptureSnapshot)
 //! * Use https://github.com/Kudaes/DInvoke_rs or similar for API hooks evasion
 //! * https://splintercod3.blogspot.com/p/the-hidden-side-of-seclogon-part-3.html
 //! * Implement fileless exfiltration channels (e.g., TFTP, FTP, HTTP...)
+//! * Consider dumping to memory using minidump callbacks instead of TxF API
+//! * https://adepts.of0x.cc/hookson-hootoff/
 //! * Consider better command line handling if minimal is not enough
 //!
 
