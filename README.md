@@ -54,6 +54,7 @@ C:\> blindsight.exe 29ABE9Hy.log
 ```
 
 ## Tested on
+* Microsoft Windows 10 (x64) with Microsoft Defender Antivirus
 * Microsoft Windows 11 with Microsoft Defender Antivirus
 
 ## TODO
