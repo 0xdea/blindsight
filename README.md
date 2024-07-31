@@ -17,7 +17,7 @@ It uses Transactional NTFS (TxF API) to transparently encrypt the memory
 dump, to avoid triggering AV/EDR/XDR.
 
 Blog post:  
-*TODO*  
+https://security.humanativaspa.it/an-offensive-rust-encore  
 
 See also:  
 https://attack.mitre.org/techniques/T1003/001/  
