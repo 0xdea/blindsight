@@ -8,6 +8,7 @@ homepage = "https://0xdeadbeef.info/"
 repository = "https://github.com/0xdea/blindsight"
 license = "MIT"
 keywords = ["windows", "minidump", "mimikatz", "redteaming", "tactical-exploitation"]
+categories = ["command-line-utilities"]
 
 [dependencies]
 sysinfo = "0.30.13"
