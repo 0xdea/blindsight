@@ -155,8 +155,8 @@ fn dump() -> Result<(), Box<dyn Error>> {
             None,
             None,
             None,
-        )?;
-    }
+        )?
+    };
     println!("[+] Dump successful!");
 
     // Map a view of the intermediate file into our address space
