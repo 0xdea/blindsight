@@ -64,12 +64,12 @@
 //! * Consider better command line handling if minimal is not enough
 //!
 
-use core::slice;
 use std::error::Error;
 use std::fs::File;
 use std::io::{Read, Write};
 use std::path::PathBuf;
 use std::ptr;
+use std::slice;
 
 use rand::distributions::Alphanumeric;
 use rand::prelude::*;
