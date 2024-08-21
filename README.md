@@ -1,4 +1,5 @@
 # blindsight
+
 [![](https://img.shields.io/github/stars/0xdea/blindsight.svg?style=flat&color=yellow)](https://github.com/0xdea/blindsight)
 [![](https://img.shields.io/github/forks/0xdea/blindsight.svg?style=flat&color=green)](https://github.com/0xdea/blindsight)
 [![](https://img.shields.io/github/watchers/0xdea/blindsight.svg?style=flat&color=red)](https://github.com/0xdea/blindsight)
@@ -8,16 +9,16 @@
 > "There's no such things as survival of the fittest.  
 > Survival of the most adequate, maybe.  
 > It doesn't matter whether a solution's optimal.  
-> All that matters is whether it beats the alternative."  
->  
-> -- Peter Watts, Blindsight (2006)  
+> All that matters is whether it beats the alternative."
+>
+> -- Peter Watts, Blindsight (2006)
 
-Red teaming tool to dump LSASS memory, bypassing common countermeasures. 
-It uses Transactional NTFS (TxF API) to transparently encrypt the memory 
+Red teaming tool to dump LSASS memory, bypassing common countermeasures.
+It uses Transactional NTFS (TxF API) to transparently scramble the memory
 dump, to avoid triggering AV/EDR/XDR.
 
 Blog post:  
-https://security.humanativaspa.it/an-offensive-rust-encore  
+https://security.humanativaspa.it/an-offensive-rust-encore
 
 See also:  
 https://attack.mitre.org/techniques/T1003/001/  
@@ -27,9 +28,10 @@ https://github.com/fortra/nanodump
 https://github.com/w1u0u1/minidump  
 https://github.com/anthemtotheego/CredBandit  
 https://github.com/joaoviictorti/RustRedOps  
-https://github.com/Kudaes/Dumpy  
+https://github.com/Kudaes/Dumpy
 
 ## Cross-compiling
+
 ```
 [macOS example]
 $ brew install mingw-w64
@@ -38,26 +40,32 @@ $ cargo build --release --target x86_64-pc-windows-gnu
 ```
 
 ## Usage
+
 ```
-C:\> blindsight.exe [dump | file_to_decrypt.log]
+C:\> blindsight.exe [dump | file_to_unscramble.log]
 ```
 
 ## Examples
+
 Dump LSASS memory:
+
 ```sh
 C:\> blindsight.exe
 ```
 
-Decrypt encrypted memory dump:
+Unscramble memory dump:
+
 ```sh
 C:\> blindsight.exe 29ABE9Hy.log
 ```
 
 ## Tested on
+
 * Microsoft Windows 10 (x64) with Microsoft Defender Antivirus
 * Microsoft Windows 11 with Microsoft Defender Antivirus
 
 ## TODO
+
 * Optimize memory usage (simply corrupt "magic bytes" instead of XORing?)
 * Use litcrypt2 or similar to encrypt strings locally
 * Allow to manually specify LSASS pid to avoid noisy process scans

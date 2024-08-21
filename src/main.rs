@@ -2,15 +2,15 @@
 // blindsight - Dump LSASS memory bypassing countermeasures
 // Copyright (c) 2024 Marco Ivaldi <raptor@0xdeadbeef.info>
 //
-// > "There's no such things as survival of the fittest.  
-// > Survival of the most adequate, maybe.  
-// > It doesn't matter whether a solution's optimal.  
-// > All that matters is whether it beats the alternative."  
-// >  
-// > -- Peter Watts, Blindsight (2006)  
+// > "There's no such things as survival of the fittest.
+// > Survival of the most adequate, maybe.
+// > It doesn't matter whether a solution's optimal.
+// > All that matters is whether it beats the alternative."
+// >
+// > -- Peter Watts, Blindsight (2006)
 //
-// Red teaming tool to dump LSASS memory, bypassing common countermeasures. 
-// It uses Transactional NTFS (TxF API) to transparently encrypt the memory 
+// Red teaming tool to dump LSASS memory, bypassing common countermeasures.
+// It uses Transactional NTFS (TxF API) to transparently scramble the memory
 // dump, to avoid triggering AV/EDR/XDR.
 //
 
@@ -60,7 +60,7 @@ fn main() {
 /// Print usage information
 fn usage(prog: &str) {
     println!("Usage:");
-    println!(".\\{prog} [dump | file_to_decrypt.log]");
+    println!(".\\{prog} [dump | file_to_unscramble.log]");
     println!("\nExamples:");
     println!(".\\{prog}");
     println!(".\\{prog} 29ABE9Hy.log");
