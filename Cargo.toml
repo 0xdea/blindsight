@@ -7,7 +7,7 @@ description = "Red teaming tool to dump LSASS memory, bypassing common counterme
 homepage = "https://0xdeadbeef.info/"
 repository = "https://github.com/0xdea/blindsight"
 license = "MIT"
-keywords = ["windows", "minidump", "mimikatz", "redteaming", "tactical-exploitation"]
+keywords = ["windows", "minidump", "mimikatz", "redteaming", "exploitation"]
 categories = ["command-line-utilities"]
 
 [dependencies]
