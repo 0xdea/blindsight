@@ -11,11 +11,11 @@ keywords = ["windows", "minidump", "mimikatz", "redteaming", "exploitation"]
 categories = ["command-line-utilities"]
 
 [dependencies]
-sysinfo = "0.30.13"
-rand = "0.8.4"
+sysinfo = "0.31"
+rand = "0.8"
 
 [dependencies.windows]
-version = "0.58.0"
+version = "0.57"
 features = [
     "Win32_Security",
     "Win32_System_Threading",

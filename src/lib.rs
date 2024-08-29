@@ -198,7 +198,7 @@ fn lsass_pid() -> Result<u32, Box<dyn Error>> {
 
     // Find LSASS process
     let proc = sys
-        .processes_by_exact_name(LSASS)
+        .processes_by_exact_name(LSASS.as_ref())
         .next()
         .ok_or("Process not found")?;
 
