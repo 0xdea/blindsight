@@ -25,6 +25,14 @@ features = [
     "Win32_System_Memory",
 ]
 
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
+nursery = "warn"
+cargo = "warn"
+missing_errors_doc = "allow"
+doc_markdown = "allow"
+
 [profile.release]
 # see https://github.com/johnthagen/min-sized-rust
 strip = true
