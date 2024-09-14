@@ -30,6 +30,7 @@ all = "warn"
 pedantic = "warn"
 nursery = "warn"
 cargo = "warn"
+
 missing_errors_doc = "allow"
 doc_markdown = "allow"
 
