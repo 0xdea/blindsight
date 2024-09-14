@@ -78,13 +78,9 @@ use sysinfo::System;
 
 use windows::core::{PCSTR, PCWSTR};
 use windows::Win32::Foundation::CloseHandle;
-#[allow(clippy::wildcard_imports)]
 use windows::Win32::Storage::FileSystem::*;
-#[allow(clippy::wildcard_imports)]
 use windows::Win32::System::Diagnostics::Debug::*;
-#[allow(clippy::wildcard_imports)]
 use windows::Win32::System::Memory::*;
-#[allow(clippy::wildcard_imports)]
 use windows::Win32::System::Threading::*;
 
 const LSASS: &str = "lsass.exe";
