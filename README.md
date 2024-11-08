@@ -17,23 +17,24 @@ Red teaming tool to dump LSASS memory, bypassing common countermeasures.
 It uses Transactional NTFS (TxF API) to transparently scramble the memory
 dump, to avoid triggering AV/EDR/XDR.
 
-Blog post:  
-https://security.humanativaspa.it/an-offensive-rust-encore
+Blog post:
 
-See also:  
-https://attack.mitre.org/techniques/T1003/001/  
-https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary  
-https://www.ired.team/offensive-security/credential-access-and-credential-dumping  
-https://github.com/fortra/nanodump  
-https://github.com/w1u0u1/minidump  
-https://github.com/anthemtotheego/CredBandit  
-https://github.com/joaoviictorti/RustRedOps  
-https://github.com/Kudaes/Dumpy
+* <https://security.humanativaspa.it/an-offensive-rust-encore>
 
-## Cross-compiling
+See also:
 
-```
-[macOS example]
+* <https://attack.mitre.org/techniques/T1003/001/>
+* <https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary>
+* <https://www.ired.team/offensive-security/credential-access-and-credential-dumping>
+* <https://github.com/fortra/nanodump>
+* <https://github.com/w1u0u1/minidump>
+* <https://github.com/anthemtotheego/CredBandit>
+* <https://github.com/joaoviictorti/RustRedOps>
+* <https://github.com/Kudaes/Dumpy>
+
+## Cross-compiling (macOS example)
+
+```sh
 $ brew install mingw-w64
 $ rustup target add x86_64-pc-windows-gnu
 $ cargo build --release --target x86_64-pc-windows-gnu
@@ -41,8 +42,10 @@ $ cargo build --release --target x86_64-pc-windows-gnu
 
 ## Usage
 
-```
-C:\> blindsight.exe [dump | file_to_unscramble.log]
+Inside an Administrator's PowerShell window:
+
+```sh
+C:\> .\blindsight.exe [dump | file_to_unscramble.log]
 ```
 
 ## Examples
@@ -50,19 +53,25 @@ C:\> blindsight.exe [dump | file_to_unscramble.log]
 Dump LSASS memory:
 
 ```sh
-C:\> blindsight.exe
+C:\> .\blindsight.exe
 ```
 
 Unscramble memory dump:
 
 ```sh
-C:\> blindsight.exe 29ABE9Hy.log
+C:\> .\blindsight.exe 29ABE9Hy.log
 ```
 
 ## Tested on
 
-* Microsoft Windows 10 (x64) with Microsoft Defender Antivirus
-* Microsoft Windows 11 with Microsoft Defender Antivirus
+* Microsoft Windows 10 (x64)
+* Microsoft Windows 11 (x64)
+* Microsoft Windows 11 (ARM64)
+* Microsoft Windows Server 2016 (x64)
+* Microsoft Windows Server 2019 (x64)
+* Microsoft Windows Server 2022 (x64)
+
+*Note: Do not test on production servers, as accessing LSASS might cause system instability!*
 
 ## TODO
 

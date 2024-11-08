@@ -13,45 +13,52 @@
 //! It uses Transactional NTFS (TxF API) to transparently scramble the memory
 //! dump, to avoid triggering AV/EDR/XDR.
 //!
-//! # See also
-//! [Mitre](https://attack.mitre.org/techniques/T1003/001/)  
-//! [Synacktiv](https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary)  
-//! [RT Notes](https://www.ired.team/offensive-security/credential-access-and-credential-dumping)
-//! [nanodump](https://github.com/fortra/nanodump)  
-//! [minidump](https://github.com/w1u0u1/minidump)  
-//! [Credbandit](https://github.com/anthemtotheego/CredBandit)  
-//! [RustRedOps](https://github.com/joaoviictorti/RustRedOps)  
-//! [Dumpy](https://github.com/Kudaes/Dumpy)  
+//! ## See also
+//! * [Mitre](https://attack.mitre.org/techniques/T1003/001/)
+//! * [Synacktiv](https://www.synacktiv.com/en/publications/windows-secrets-extraction-a-summary)
+//! * [RT Notes](https://www.ired.team/offensive-security/credential-access-and-credential-dumping)
+//! * [nanodump](https://github.com/fortra/nanodump)
+//! * [minidump](https://github.com/w1u0u1/minidump)
+//! * [CredBandit](https://github.com/anthemtotheego/CredBandit)
+//! * [RustRedOps](https://github.com/joaoviictorti/RustRedOps)
+//! * [Dumpy](https://github.com/Kudaes/Dumpy)
 //!
-//! # Cross-compiling
+//! ## Cross-compiling (macOS example)
 //! ```sh
-//! [macOS example]
 //! $ brew install mingw-w64
 //! $ rustup target add x86_64-pc-windows-gnu
 //! $ cargo build --release --target x86_64-pc-windows-gnu
 //! ```
 //!
-//! # Usage
+//! ## Usage
+//!
+//! Inside an Administrator's PowerShell window:
 //! ```sh
-//! C:\> blindsight.exe [dump | file_to_unscramble.log]
+//! PS C:\> .\blindsight.exe [dump | file_to_unscramble.log]
 //! ```
 //!
-//! # Examples
+//! ## Examples
 //! Dump LSASS memory:
 //! ```sh
-//! C:\> blindsight.exe
+//! PS C:\> .\blindsight.exe
 //! ```
 //!
 //! Unscramble memory dump:
 //! ```sh
-//! C:\> blindsight.exe 29ABE9Hy.log
+//! PS C:\> .\blindsight.exe 29ABE9Hy.log
 //! ```
 //!
-//! # Tested on
-//! * Microsoft Windows 10 (x64) with Microsoft Defender Antivirus
-//! * Microsoft Windows 11 (x64) with Microsoft Defender Antivirus
+//! ## Tested on
+//! * Microsoft Windows 10 (x64)
+//! * Microsoft Windows 11 (x64)
+//! * Microsoft Windows 11 (ARM64)
+//! * Microsoft Windows Server 2016 (x64)
+//! * Microsoft Windows Server 2019 (x64)
+//! * Microsoft Windows Server 2022 (x64)
 //!
-//! # TODO
+//! *Note: Do not test on production servers, as accessing LSASS might cause system instability!*
+//!
+//! ## TODO
 //! * Optimize memory usage (simply corrupt "magic bytes" instead of XORing?)
 //! * Use litcrypt2 or similar to encrypt strings locally
 //! * Allow to manually specify LSASS pid to avoid noisy process scans
