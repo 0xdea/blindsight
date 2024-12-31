@@ -9,7 +9,7 @@
 //! >  
 //! > -- Peter Watts, Blindsight (2006)  
 //!
-//! Red teaming tool to dump LSASS memory, bypassing common countermeasures.
+//! Red teaming tool to dump LSASS memory, bypassing basic countermeasures.
 //! It uses Transactional NTFS (TxF API) to transparently scramble the memory
 //! dump, to avoid triggering AV/EDR/XDR.
 //!
