@@ -19,7 +19,7 @@ dump, to avoid triggering AV/EDR/XDR.
 
 Blog post:
 
-* <https://security.humanativaspa.it/an-offensive-rust-encore>
+* <https://hnsecurity.it/blog/an-offensive-rust-encore>
 
 See also:
 
