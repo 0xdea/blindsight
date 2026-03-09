@@ -71,7 +71,8 @@ C:\> .\blindsight.exe 29ABE9Hy.log
 * Microsoft Windows Server 2019 (x64)
 * Microsoft Windows Server 2022 (x64)
 
-*Note: Do not test on production servers, as accessing LSASS might cause system instability!*
+> [!CAUTION]
+> Do not test on production servers, as accessing LSASS might cause system instability!
 
 ## TODO
 
