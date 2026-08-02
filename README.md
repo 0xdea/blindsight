@@ -17,7 +17,7 @@ Red teaming tool to dump LSASS memory, bypassing basic countermeasures.
 It uses Transactional NTFS (TxF API) to transparently scramble the memory
 dump, to avoid triggering AV/EDR/XDR.
 
-## Blog post
+## Article
 
 * <https://hnsecurity.it/blog/an-offensive-rust-encore>
 
